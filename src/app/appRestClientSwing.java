@@ -8,12 +8,15 @@ package app;
 import br.edu.ifsul.bage.clientrest.RestClient;
 import br.edu.ifsul.bage.clientrest.RestClientInterface;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Noticia;
 
@@ -26,10 +29,16 @@ public class appRestClientSwing extends javax.swing.JFrame {
     RestClientInterface<Noticia> cliente;
     List<Noticia> noticias;
     Noticia noticia;
+    URL url;
 
     public appRestClientSwing() {
         initComponents();
         noticia = new Noticia();
+        try {
+            url = new URL("http://localhost:8080/noticiasAcademicas/servicos/noticias/");
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(appRestClientSwing.class.getName()).log(Level.SEVERE, null, ex);
+        }
         carregarNoticias();
     }
 
@@ -53,6 +62,7 @@ public class appRestClientSwing extends javax.swing.JFrame {
         btSalvar = new javax.swing.JButton();
         btExcluir = new javax.swing.JButton();
         btTodos = new javax.swing.JButton();
+        btURL = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Cliente de Notícias (REST WebService)");
@@ -119,6 +129,13 @@ public class appRestClientSwing extends javax.swing.JFrame {
             }
         });
 
+        btURL.setText("Configurar URL");
+        btURL.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btURLActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -140,14 +157,15 @@ public class appRestClientSwing extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(lbNoticia)
                                 .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(spTabela, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btSalvar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btExcluir)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(brFechar)))
+                            .addComponent(spTabela, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(btURL)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btSalvar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btExcluir)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(brFechar)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -159,11 +177,16 @@ public class appRestClientSwing extends javax.swing.JFrame {
                 .addComponent(edNoticia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(brFechar)
-                    .addComponent(btSalvar)
-                    .addComponent(btExcluir))
-                .addGap(2, 2, 2)
-                .addComponent(spTabela, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(brFechar)
+                            .addComponent(btSalvar)
+                            .addComponent(btExcluir))
+                        .addGap(2, 2, 2))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(btURL)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addComponent(spTabela, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -202,7 +225,7 @@ public class appRestClientSwing extends javax.swing.JFrame {
     }//GEN-LAST:event_tbNoticiasMouseClicked
 
     private void btExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btExcluirActionPerformed
-        RestClientInterface<Noticia> cliente = new RestClient<>("http://localhost:8080/noticiasAcademicas/servicos/noticias/deleteNoticia/" + noticia.getId(), "text/plain");
+        RestClientInterface<Noticia> cliente = new RestClient<>(url + "deleteNoticia/" + noticia.getId(), "text/plain");
         cliente.delete();
         cliente.close();
         carregarNoticias();
@@ -212,11 +235,11 @@ public class appRestClientSwing extends javax.swing.JFrame {
     private void btSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSalvarActionPerformed
         if (noticia.getId() == 0) {
             noticia = new Noticia(edNoticia.getText());
-            cliente = new RestClient<>("http://localhost:8080/noticiasAcademicas/servicos/noticias/postNoticia", RestClientInterface.TYPE_JSON);
+            cliente = new RestClient<>(url + "postNoticia", RestClientInterface.TYPE_JSON);
             cliente.post(noticia);
         } else {
             noticia.setNoticia(edNoticia.getText());
-            cliente = new RestClient<>("http://localhost:8080/noticiasAcademicas/servicos/noticias/putNoticia", RestClientInterface.TYPE_JSON);
+            cliente = new RestClient<>(url + "putNoticia", RestClientInterface.TYPE_JSON);
             cliente.put(noticia);
         }
         cliente.close();
@@ -227,7 +250,7 @@ public class appRestClientSwing extends javax.swing.JFrame {
     private void btFiltrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btFiltrarActionPerformed
         if (!edData.getText().equals("")) {
             try {
-                cliente = new RestClient("http://localhost:8080/noticiasAcademicas/servicos/noticias/pordata/" + URLEncoder.encode(edData.getText(), "UTF-8"), RestClientInterface.TYPE_JSON, Noticia[].class);
+                cliente = new RestClient(url + "pordata/" + URLEncoder.encode(edData.getText(), "UTF-8"), RestClientInterface.TYPE_JSON, Noticia[].class);
             } catch (UnsupportedEncodingException ex) {
                 Logger.getLogger(appRestClientSwing.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -237,13 +260,22 @@ public class appRestClientSwing extends javax.swing.JFrame {
         montaTabela();
     }//GEN-LAST:event_btFiltrarActionPerformed
 
+    private void btURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btURLActionPerformed
+        String nova_url = JOptionPane.showInputDialog(this, "Informe a URL do serviço: ", url);
+        try {
+            url = new URL(nova_url != null?nova_url:url.toString());
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(appRestClientSwing.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btURLActionPerformed
+
     private void novaNoticia() {
         noticia = new Noticia();
         edNoticia.setText("");
     }
 
     private void carregarNoticias() {
-        cliente = new RestClient("http://localhost:8080/noticiasAcademicas/servicos/noticias/todas", RestClientInterface.TYPE_JSON, Noticia[].class);
+        cliente = new RestClient(url + "todas", RestClientInterface.TYPE_JSON, Noticia[].class);
         noticias = cliente.get();
         montaTabela();
     }
@@ -297,6 +329,7 @@ public class appRestClientSwing extends javax.swing.JFrame {
     private javax.swing.JButton btFiltrar;
     private javax.swing.JButton btSalvar;
     private javax.swing.JButton btTodos;
+    private javax.swing.JButton btURL;
     private javax.swing.JFormattedTextField edData;
     private javax.swing.JTextField edNoticia;
     private javax.swing.JLabel lbData;
