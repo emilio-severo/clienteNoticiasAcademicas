@@ -64,6 +64,7 @@ public class appRestClientSwing extends javax.swing.JFrame {
         btExcluir = new javax.swing.JButton();
         btTodos = new javax.swing.JButton();
         btURL = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Cliente de Notícias (REST WebService)");
@@ -137,6 +138,13 @@ public class appRestClientSwing extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setText("Nova");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -147,7 +155,7 @@ public class appRestClientSwing extends javax.swing.JFrame {
                         .addComponent(lbData)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(edData, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 148, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btFiltrar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btTodos))
@@ -161,7 +169,9 @@ public class appRestClientSwing extends javax.swing.JFrame {
                             .addComponent(spTabela, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(btURL)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                                .addComponent(jButton1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btSalvar)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btExcluir)
@@ -179,10 +189,11 @@ public class appRestClientSwing extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(brFechar)
+                            .addComponent(btExcluir)
                             .addComponent(btSalvar)
-                            .addComponent(btExcluir))
+                            .addComponent(jButton1))
                         .addGap(2, 2, 2))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(btURL)
@@ -209,6 +220,7 @@ public class appRestClientSwing extends javax.swing.JFrame {
 
     private void btTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTodosActionPerformed
         carregarNoticias();
+        edData.setText("");
     }//GEN-LAST:event_btTodosActionPerformed
 
     private void tbNoticiasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbNoticiasMouseClicked
@@ -270,9 +282,14 @@ public class appRestClientSwing extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btURLActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        novaNoticia();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     private void novaNoticia() {
         noticia = new Noticia();
         edNoticia.setText("");
+        edNoticia.requestFocus();
     }
 
     private void carregarNoticias() {
@@ -333,6 +350,7 @@ public class appRestClientSwing extends javax.swing.JFrame {
     private javax.swing.JButton btURL;
     private javax.swing.JFormattedTextField edData;
     private javax.swing.JTextField edNoticia;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel lbData;
     private javax.swing.JLabel lbNoticia;
     private javax.swing.JScrollPane spTabela;
