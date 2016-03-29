@@ -238,7 +238,8 @@ public class appRestClientSwing extends javax.swing.JFrame {
     }//GEN-LAST:event_tbNoticiasMouseClicked
 
     private void btExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btExcluirActionPerformed
-        RestClientInterface<Noticia> cliente = new RestClient<>(url + "deleteNoticia/" + noticia.getId(), RequestContentType.JSON);
+        //RestClientInterface<Noticia> cliente = new RestClient<>(url + "deleteNoticia/" + noticia.getId(), RequestContentType.JSON);
+        cliente = RestClient.open(url + "deleteNoticia/" + noticia.getId(), RequestContentType.JSON);        
         cliente.delete();
         cliente.close();
         carregarNoticias();
@@ -248,11 +249,13 @@ public class appRestClientSwing extends javax.swing.JFrame {
     private void btSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSalvarActionPerformed
         if (noticia.getId() == 0) {
             noticia = new Noticia(edNoticia.getText());
-            cliente = new RestClient<>(url + "postNoticia", RequestContentType.JSON);
-            cliente.post(noticia);
+            //cliente = new RestClient<>(url + "postNoticia", RequestContentType.JSON);
+            cliente = RestClient.open(url + "postNoticia", RequestContentType.JSON);
+            cliente.post(noticia);            
         } else {
             noticia.setNoticia(edNoticia.getText());
-            cliente = new RestClient<>(url + "putNoticia", RequestContentType.JSON);
+            //cliente = new RestClient<>(url + "putNoticia", RequestContentType.JSON);
+            cliente = RestClient.open(url + "putNoticia", RequestContentType.JSON);
             cliente.put(noticia);
         }
         cliente.close();
@@ -263,13 +266,15 @@ public class appRestClientSwing extends javax.swing.JFrame {
     private void btFiltrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btFiltrarActionPerformed
         if (!edData.getText().equals("")) {
             try {
-                cliente = new RestClient(url + "pordata/" + URLEncoder.encode(edData.getText(), "UTF-8"), RequestContentType.JSON, Noticia[].class);
+                //cliente = new RestClient<>(url + "pordata/" + URLEncoder.encode(edData.getText(), "UTF-8"), RequestContentType.JSON, Noticia[].class);
+                cliente = RestClient.open(url + "pordata/" + URLEncoder.encode(edData.getText(), "UTF-8"), RequestContentType.JSON);                
             } catch (UnsupportedEncodingException ex) {
                 Logger.getLogger(appRestClientSwing.class.getName()).log(Level.SEVERE, null, ex);
             }
+            cliente.setType(Noticia[].class);
             noticias = cliente.get();
+            cliente.close();
         }
-        noticias = cliente.get();
         montaTabela();
     }//GEN-LAST:event_btFiltrarActionPerformed
 
@@ -293,8 +298,11 @@ public class appRestClientSwing extends javax.swing.JFrame {
     }
 
     private void carregarNoticias() {
-        cliente = new RestClient(url + "todas", RequestContentType.JSON, Noticia[].class);
+        //cliente = new RestClient(url + "todas", RequestContentType.JSON, Noticia[].class);
+        cliente = RestClient.open(url + "todas", RequestContentType.JSON);
+        cliente.setType(Noticia[].class);
         noticias = cliente.get();
+        cliente.close();
         montaTabela();
     }
 
